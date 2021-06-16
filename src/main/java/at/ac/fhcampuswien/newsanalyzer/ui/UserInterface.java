@@ -2,35 +2,46 @@ package at.ac.fhcampuswien.newsanalyzer.ui;
 
 
 import at.ac.fhcampuswien.newsanalyzer.ctrl.Controller;
+import at.ac.fhcampuswien.newsapi.NewsApiException;
+import at.ac.fhcampuswien.newsapi.enums.Category;
+import at.ac.fhcampuswien.newsapi.enums.Country;
+import at.ac.fhcampuswien.newsapi.enums.Endpoint;
+import at.ac.fhcampuswien.newsapi.enums.Language;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
-public class UserInterface 
+public class UserInterface
 {
 	private Controller ctrl = new Controller();
 
-	public void getDataFromCtrl1(){
-		System.out.println("ABC");
-
-		ctrl.process();
+	public void getDataFromCtrl1() {
+		ctrl.process("corona", Category.health, Country.at, Endpoint.TOP_HEADLINES, Language.de, "100", "1");
 	}
 
-	public void getDataFromCtrl2(){
+	public void getDataFromCtrl2() {
 		// TODO implement me
+
+		ctrl.process("bitcoin", Category.business, Country.at, Endpoint.TOP_HEADLINES, Language.de, "100", "1");
 	}
 
-	public void getDataFromCtrl3(){
+	public void getDataFromCtrl3() {
 		// TODO implement me
+		ctrl.process("apple", Category.technology, Country.at, Endpoint.TOP_HEADLINES, Language.de, "100", "1");
+
 	}
 	
 	public void getDataForCustomInput() {
 		// TODO implement me
+		Scanner scanner = new Scanner(System.in);
+		ctrl.process(scanner.next(), Category.technology, Country.at, Endpoint.TOP_HEADLINES, Language.de, "100", "1");
+
 	}
 
 
-	public void start() {
+	public void start(){
 		Menu<Runnable> menu = new Menu<>("User Interface");
 		menu.setTitle("Wählen Sie aus:");
 		menu.insert("a", "Choice ABC", this::getDataFromCtrl1);
@@ -56,7 +67,7 @@ public class UserInterface
 		return value.trim();
 	}
 
-	protected Double readDouble(int lowerlimit, int upperlimit) 	{
+	protected Double readDouble(int lowerlimit, int upperlimit) {
 		Double number = null;
         while (number == null) {
 			String str = this.readLine();

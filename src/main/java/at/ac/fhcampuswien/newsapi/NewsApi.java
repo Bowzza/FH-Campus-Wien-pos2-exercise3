@@ -115,13 +115,17 @@ public class NewsApi {
     }
 
     protected String requestData() {
-        String url = buildURL();
+        String url = null;
+        try {
+            url = buildURL();
+        } catch (NewsApiException e) {
+            e.printStackTrace();
+        }
         System.out.println("URL: " + url);
         URL obj = null;
         try {
             obj = new URL(url);
         } catch (MalformedURLException e) {
-            // TODO improve ErrorHandling
             e.printStackTrace();
         }
         HttpURLConnection con;
@@ -134,57 +138,87 @@ public class NewsApi {
                 response.append(inputLine);
             }
             in.close();
-        } catch (IOException e) {
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
+        catch (IOException e) {
             // TODO improve ErrorHandling
             System.out.println("Error "+e.getMessage());
         }
         return response.toString();
     }
 
-    protected String buildURL() {
+    protected String buildURL() throws NewsApiException {
         // TODO ErrorHandling
         String urlbase = String.format(NEWS_API_URL,getEndpoint().getValue(),getQ(),getApiKey());
         StringBuilder sb = new StringBuilder(urlbase);
 
         System.out.println(urlbase);
 
-        if(getFrom() != null){
-            sb.append(DELIMITER).append("from=").append(getFrom());
+        try {
+            if(getFrom() != null){
+                sb.append(DELIMITER).append("from=").append(getFrom());
+            } else {
+                throw new NewsApiException("From must not be null!");
+            }
+            if(getTo() != null){
+                sb.append(DELIMITER).append("to=").append(getTo());
+            }else {
+                throw new NewsApiException("To must not be null!");
+            }
+            if(getPage() != null){
+                sb.append(DELIMITER).append("page=").append(getPage());
+            }else {
+                throw new NewsApiException("Page must not be null!");
+            }
+            if(getPageSize() != null){
+                sb.append(DELIMITER).append("pageSize=").append(getPageSize());
+            }else {
+                throw new NewsApiException("PageSize must not be null!");
+            }
+            if(getLanguage() != null){
+                sb.append(DELIMITER).append("language=").append(getLanguage());
+            }else {
+                throw new NewsApiException("Language must not be null!");
+            }
+            if(getSourceCountry() != null){
+                sb.append(DELIMITER).append("country=").append(getSourceCountry());
+            }else {
+                throw new NewsApiException("sd");
+            }
+            if(getSourceCategory() != null){
+                sb.append(DELIMITER).append("category=").append(getSourceCategory());
+            }else {
+                throw new NewsApiException("Category must not be null!");
+            }
+            if(getDomains() != null){
+                sb.append(DELIMITER).append("domains=").append(getDomains());
+            }else {
+                throw new NewsApiException("Domains must not be null!");
+            }
+            if(getExcludeDomains() != null){
+                sb.append(DELIMITER).append("excludeDomains=").append(getExcludeDomains());
+            }else {
+                throw new NewsApiException("Excluded domains must not be null!");
+            }
+            if(getqInTitle() != null){
+                sb.append(DELIMITER).append("qInTitle=").append(getqInTitle());
+            }else {
+                throw new NewsApiException("Queue must not be null!");
+            }
+            if(getSortBy() != null){
+                sb.append(DELIMITER).append("sortBy=").append(getSortBy());
+            }else {
+                throw new NewsApiException("SortBy must not be null!");
+            }
+        } catch (NewsApiException e) {
+            System.out.println(e.getMessage());
         }
-        if(getTo() != null){
-            sb.append(DELIMITER).append("to=").append(getTo());
-        }
-        if(getPage() != null){
-            sb.append(DELIMITER).append("page=").append(getPage());
-        }
-        if(getPageSize() != null){
-            sb.append(DELIMITER).append("pageSize=").append(getPageSize());
-        }
-        if(getLanguage() != null){
-            sb.append(DELIMITER).append("language=").append(getLanguage());
-        }
-        if(getSourceCountry() != null){
-            sb.append(DELIMITER).append("country=").append(getSourceCountry());
-        }
-        if(getSourceCategory() != null){
-            sb.append(DELIMITER).append("category=").append(getSourceCategory());
-        }
-        if(getDomains() != null){
-            sb.append(DELIMITER).append("domains=").append(getDomains());
-        }
-        if(getExcludeDomains() != null){
-            sb.append(DELIMITER).append("excludeDomains=").append(getExcludeDomains());
-        }
-        if(getqInTitle() != null){
-            sb.append(DELIMITER).append("qInTitle=").append(getqInTitle());
-        }
-        if(getSortBy() != null){
-            sb.append(DELIMITER).append("sortBy=").append(getSortBy());
-        }
+
         return sb.toString();
     }
 
-    public NewsResponse getNews() {
+    public NewsResponse getNews()  {
         NewsResponse newsReponse = null;
         String jsonResponse = requestData();
         if(jsonResponse != null && !jsonResponse.isEmpty()){
